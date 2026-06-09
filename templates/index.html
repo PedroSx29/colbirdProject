@@ -1,11 +1,78 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <title>Colbird</title>
 </head>
 <body>
-    
+    <nav class="navbar navbar-expand-ms" style="background-color: #e3f2fd;" data-bs-theme="light">
+        <div class="container-fluid">
+            <ul class="navbar nav">
+                <li class="nav-item">
+                    <a href="" class="nav-link fw-medium">Identificador</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link fw-medium">Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    {% block Identificador %}
+    <div class="container mt-3">
+        <button id="btnGrabar">Grabar y Buscar Ave</button>
+        <div id="resultado"></div>
+    </div>
+    <script>
+    let mediaRecorder;
+    let fragmentosDeAudio = [];
+
+    document.getElementById('btnGrabar').addEventListener('click', async () => {
+        const btn = document.getElementById('btnGrabar');
+        btn.innerText = "Grabando 5 segundos...";
+        btn.disabled = true;
+
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        fragmentosDeAudio = [];
+
+        mediaRecorder.ondataavailable = e => fragmentosDeAudio.push(e.data);
+        
+        mediaRecorder.onstop = async () => {
+            // Empaquetar el audio grabado
+            const audioBlob = new Blob(fragmentosDeAudio, { type: 'audio/webm' });
+            const formData = new FormData();
+            formData.append('audio_mic', audioBlob, 'grabacion.webm');
+
+            // Enviar a tu vista de Django
+            const response = await fetch('/identificar-ave/', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' } // Necesario en Django
+            });
+
+            const data = await response.json();
+            
+            if (data.encontrado) {
+                document.getElementById('resultado').innerHTML = `¡Coincidencia! Ave: ${data.ave}`;
+                // Aquí abres tu pestaña con target="_blank" o tu Modal
+                window.open(`/ave/${data.id}/`, '_blank');
+            } else {
+                document.getElementById('resultado').innerHTML = "No se encontraron coincidencias exactas.";
+            }
+
+            btn.innerText = "Grabar y Buscar Ave";
+            btn.disabled = false;
+        };
+
+        // Grabar exactamente 5 segundos y detener
+        mediaRecorder.start();
+            setTimeout(() => mediaRecorder.stop(), 5000);
+        });
+    </script>
+    {% endblock Identificador %}
 </body>
 </html>
