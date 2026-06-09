@@ -7,3 +7,4 @@ class Ave(models.Model):
     nombreCientifico = models.CharField(max_length=60)
     familia = models.CharField(max_length=40)
     especie = models.CharField(max_length=40)
+    audio = models.FileField(upload_to='audios_ave/', null=False)
