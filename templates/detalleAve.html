@@ -1,0 +1,39 @@
+{% for a in ave %}
+    <div class="modal-header bg-light">
+        <h5 class="modal-title text-dark fw-bold">{{ a.nombreComun }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <div class="modal-body p-4">
+        <div class="row">
+            <div class="col-12">
+                <ul class="list-group list-group-flush text-start">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Nombre Científico:</strong>
+                        <span class="text-muted fst-italic">{{ a.nombreCientifico }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Familia:</strong>
+                        <span class="text-muted">{{ a.familia }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Especie:</strong>
+                        <span class="text-muted">{{ a.especie }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+    </div>
+{% empty %}
+    <div class="modal-header bg-warning">
+        <h5 class="modal-title text-dark fw-bold">Aviso</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body text-center p-4">
+        <p class="mb-0 text-dark">No se encontró información disponible para este espécimen en la base de datos.</p>
+    </div>
+{% endfor %}

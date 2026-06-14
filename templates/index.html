@@ -24,55 +24,52 @@
     {% block Identificador %}
     <div class="container mt-3 text-center">
         <button id="btnGrabar" class="btn btn-outline-light fw-medium" style="background-color: #e3f2fd; color: gray;">Grabar y Buscar Ave</button>
-        <div id="resultado"></div>
+        <div id="aves" class="text-center mt-2 d-none">
+            <button class="btn btn-outline-light fw-medium" style="background-color: #e3f2fd; color: gray;" 
+            data-bs-toggle="modal" 
+            data-bs-target="#modalAve" 
+            data-url="{% url 'obtenerLoica' %}">Loica</button>
+        </div>
     </div>
-    <script>
-    let mediaRecorder;
-    let fragmentosDeAudio = [];
-
-    document.getElementById('btnGrabar').addEventListener('click', async () => {
-        const btn = document.getElementById('btnGrabar');
-        btn.innerText = "Grabando 5 segundos...";
-        btn.disabled = true;
-
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        fragmentosDeAudio = [];
-
-        mediaRecorder.ondataavailable = e => fragmentosDeAudio.push(e.data);
-        
-        mediaRecorder.onstop = async () => {
-            // Empaquetar el audio grabado
-            const audioBlob = new Blob(fragmentosDeAudio, { type: 'audio/webm' });
-            const formData = new FormData();
-            formData.append('audio_mic', audioBlob, 'grabacion.webm');
-
-            // Enviar a tu vista de Django
-            const response = await fetch('/identificar-ave/', {
-                method: 'POST',
-                body: formData,
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' } // Necesario en Django
-            });
-
-            const data = await response.json();
-            
-            if (data.encontrado) {
-                document.getElementById('resultado').innerHTML = `¡Coincidencia! Ave: ${data.ave}`;
-                // Aquí abres tu pestaña con target="_blank" o tu Modal
-                window.open(`/ave/${data.id}/`, '_blank');
-            } else {
-                document.getElementById('resultado').innerHTML = "No se encontraron coincidencias exactas.";
-            }
-
-            btn.innerText = "Grabar y Buscar Ave";
-            btn.disabled = false;
-        };
-
-        // Grabar exactamente 5 segundos y detener
-        mediaRecorder.start();
-            setTimeout(() => mediaRecorder.stop(), 5000);
-        });
-    </script>
+    <div class="modal fade" id="modalAve" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-md"> 
+            <div class="modal-content" id="contenedor-renderizado">
+            </div>
+        </div>
+    </div>
     {% endblock Identificador %}
+    <script>
+        const btnGrabar = document.getElementById('btnGrabar')
+        const contenedorAves = document.getElementById('aves')
+        btnGrabar.addEventListener('click', function() {
+            btnGrabar.classList.add('d-none')
+            contenedorAves.classList.remove('d-none')
+        })
+        // 2. Lógica dinámica para el Modal (ahora está fuera y funciona independiente)
+    const modalAve = document.getElementById('modalAve');
+    
+    modalAve.addEventListener('show.bs.modal', function (event) {
+        const boton = event.relatedTarget
+        const urlDjango = boton.getAttribute('data-url')
+        const contenedor = document.getElementById('contenedor-renderizado')
+        
+        fetch(urlDjango)
+            .then(response => {
+                if (!response.ok) throw new Error('Error HTTP status: ' + response.status)
+                return response.text()
+            })
+            .then(html => {
+                contenedor.innerHTML = html; 
+            })
+            .catch(error => {
+                contenedor.innerHTML = `
+                    <div class="modal-body text-center p-4 text-danger">
+                        <p class="mb-0">No se pudo cargar la información del ave.</p>
+                    </div>
+                `
+                console.error("Detalle del fallo:", error)
+            })
+        })
+    </script>
 </body>
 </html>
