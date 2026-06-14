@@ -45,30 +45,30 @@
             btnGrabar.classList.add('d-none')
             contenedorAves.classList.remove('d-none')
         })
-        // 2. Lógica dinámica para el Modal (ahora está fuera y funciona independiente)
-    const modalAve = document.getElementById('modalAve');
     
-    modalAve.addEventListener('show.bs.modal', function (event) {
-        const boton = event.relatedTarget
-        const urlDjango = boton.getAttribute('data-url')
-        const contenedor = document.getElementById('contenedor-renderizado')
+        const modalAve = document.getElementById('modalAve');
         
-        fetch(urlDjango)
-            .then(response => {
-                if (!response.ok) throw new Error('Error HTTP status: ' + response.status)
-                return response.text()
-            })
-            .then(html => {
-                contenedor.innerHTML = html; 
-            })
-            .catch(error => {
-                contenedor.innerHTML = `
-                    <div class="modal-body text-center p-4 text-danger">
-                        <p class="mb-0">No se pudo cargar la información del ave.</p>
-                    </div>
-                `
-                console.error("Detalle del fallo:", error)
-            })
+        modalAve.addEventListener('show.bs.modal', function (event) {
+            const boton = event.relatedTarget
+            const urlDjango = boton.getAttribute('data-url')
+            const contenedor = document.getElementById('contenedor-renderizado')
+            
+            fetch(urlDjango)
+                .then(response => {
+                    if (!response.ok) throw new Error('Error HTTP status: ' + response.status)
+                    return response.text()
+                })
+                .then(html => {
+                    contenedor.innerHTML = html; 
+                })
+                .catch(error => {
+                    contenedor.innerHTML = `
+                        <div class="modal-body text-center p-4 text-danger">
+                            <p class="mb-0">No se pudo cargar la información del ave.</p>
+                        </div>
+                    `
+                    console.error("Detalle del fallo:", error)
+                })
         })
     </script>
 </body>
