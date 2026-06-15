@@ -25,3 +25,7 @@ def obtenerTiuque(request):
         'ave': tiuque
     }
     return render(request, 'detalleAve.html', data)
+
+def iniciciocio(request):
+    return render(request, 'index.html')
+
