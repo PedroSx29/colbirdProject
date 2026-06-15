@@ -20,6 +20,14 @@
                         <strong>Especie:</strong>
                         <span class="text-muted">{{ a.especie }}</span>
                     </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center mt-2">
+                        <img src="/media/{{ a.imagen }}" alt="" width="180px" height="180px" class="rounded-2">
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center mt-2">
+                        <audio controls>
+                            <source src="/media/{{ a.audio }}" type="audio/mp3">
+                        </audio>
+                    </li>
                 </ul>
             </div>
         </div>

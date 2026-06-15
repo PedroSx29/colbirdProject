@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from colbirdApp.views import inicio, obtenerLoica
+from colbirdApp.views import inicio, obtenerLoica, obtenerCarpintero, obtenerTiuque
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', inicio, name='inicio'),
-    path('obtenerLoica/', obtenerLoica, name='obtenerLoica')
+    path('obtenerLoica/', obtenerLoica, name='obtenerLoica'),
+    path('obtenerCarpintero/', obtenerCarpintero, name='obtenerCarpintero'),
+    path('obtenerTiuque/', obtenerTiuque, name='obtenerTiuque'),
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -11,3 +11,17 @@ def obtenerLoica(request):
         'ave': loica
     }
     return render(request, 'detalleAve.html', data)
+
+def obtenerCarpintero(request):
+    carpintero = Ave.objects.filter(pk=2)
+    data = {
+        'ave': carpintero
+    }
+    return render(request, 'detalleAve.html', data)
+
+def obtenerTiuque(request):
+    tiuque = Ave.objects.filter(pk=3)
+    data = {
+        'ave': tiuque
+    }
+    return render(request, 'detalleAve.html', data)
