@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 class Ave(models.Model):
@@ -9,3 +10,13 @@ class Ave(models.Model):
     especie = models.CharField(max_length=40)
     imagen = models.FileField(upload_to='imgs_ave/', null=False, default='')
     audio = models.FileField(upload_to='audios_ave/', null=False)
+
+    def __str__(self):
+        return self.nombreComun
+
+class Busqueda(models.Model):
+    ave = models.ForeignKey(Ave, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Búsqueda: {self.ave.nombreComun} - {self.fecha.strftime('%d/%m/%Y')}"

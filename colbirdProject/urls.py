@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from colbirdApp.views import inicio, obtenerLoica, obtenerCarpintero, obtenerTiuque
+from colbirdApp.views import inicio, obtenerLoica, obtenerCarpintero, obtenerTiuque, datos_dashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +26,5 @@ urlpatterns = [
     path('obtenerLoica/', obtenerLoica, name='obtenerLoica'),
     path('obtenerCarpintero/', obtenerCarpintero, name='obtenerCarpintero'),
     path('obtenerTiuque/', obtenerTiuque, name='obtenerTiuque'),
+    path('datos-dashboard/', datos_dashboard, name='datos_dashboard'),
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
